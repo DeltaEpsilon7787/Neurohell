@@ -1,0 +1,1 @@
+"C:/Editor/Temporary/Anaconda/envs/neurohell/python.exe" "./main.py"

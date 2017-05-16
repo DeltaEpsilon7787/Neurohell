@@ -1,0 +1,41 @@
+Architecture:
+    C - Conv2D
+        name
+        filters
+        kernel_size
+        activation
+
+    D - Dropout
+        name
+        rate
+
+    G - Gaussian Noise
+        name
+        stddev
+
+    A - AveragePooling2D
+        name
+        pool_size
+    M - MaxPooling2D
+        name
+        pool_size
+
+    F - Flatten
+        name
+    R - Reshape
+        name
+        target_shape
+
+    L - Dense Layer
+        name
+        units
+        activation
+
+Dictionary entries:
+    [tag][id]
+    C0 - first Conv2D
+    C1 - second Conv2D
+
+Compilation:
+    optimizer
+    loss

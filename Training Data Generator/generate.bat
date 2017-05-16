@@ -1,0 +1,1 @@
+"C:\Users\Editor\Anaconda3\envs\neurohell\python.exe" "./generator.py" 50 -r --width 40 --height 60

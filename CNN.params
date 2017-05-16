@@ -1,0 +1,41 @@
+{
+    "validation_split": 0.2,
+    "architecture_code": "CMFLL",
+    "input_shape": [
+        60,
+        40,
+        1
+    ],
+    "architecture": {
+        "C0": {
+            "filters": 16,
+            "activation": "tanh",
+            "kernel_size": 7,
+            "use_bias": 0
+        },
+        "M0": {
+            "pool_size": [
+                4,
+                4
+            ]
+        },
+        "D0": {
+            "rate": 0.0
+        },
+        "L0": {
+            "units": 20,
+            "activation": "tanh",
+            "use_bias": 0
+        },
+        "L1": {
+            "units": 62,
+            "activation": "softmax",
+            "use_bias": 0
+        }
+    },
+    "training_patience": 2,
+    "optimizer": "adam",
+    "IOPath": ".\\CNN.neuro",
+    "confidence_threshold": 0.90,
+    "loss": "categorical_crossentropy"
+}
