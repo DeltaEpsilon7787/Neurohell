@@ -1,6 +1,6 @@
 {
     "validation_split": 0.2,
-    "architecture_code": "CMFLL",
+    "architecture_code": "CMGCAGFLL",
     "input_shape": [
         60,
         40,
@@ -8,9 +8,10 @@
     ],
     "architecture": {
         "C0": {
-            "filters": 16,
-            "activation": "tanh",
-            "kernel_size": 7,
+            "name": "basic_stuff",
+            "filters": 64,
+            "activation": "relu",
+            "kernel_size": 3,
             "use_bias": 0
         },
         "M0": {
@@ -19,22 +20,40 @@
                 4
             ]
         },
-        "D0": {
-            "rate": 0.0
+        "G0": {
+            "stddev": 0.01
+        },
+        "C1": {
+            "name": "features",
+            "filters": 64,
+            "activation": "relu",
+            "kernel_size": 3,
+            "use_bias": 0
+        },
+        "A0": {
+            "pool_size": [
+                3,
+                3
+            ]
+        },
+        "G1": {
+            "stddev": 0.01
         },
         "L0": {
-            "units": 20,
-            "activation": "tanh",
+            "name": "recognition_layer",
+            "units": 124,
+            "activation": "relu",
             "use_bias": 0
         },
         "L1": {
+            "name": "output_layer",
             "units": 62,
             "activation": "softmax",
             "use_bias": 0
         }
     },
     "training_patience": 2,
-    "optimizer": "adam",
+    "optimizer": "adagrad",
     "IOPath": ".\\CNN.neuro",
     "confidence_threshold": 0.90,
     "loss": "categorical_crossentropy"

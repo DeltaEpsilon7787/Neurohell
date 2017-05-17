@@ -17,6 +17,8 @@ parser.add_argument('-r', '--restart', action='store_true')
 parser.add_argument('--characters', type=str, action='store', default=ascii_letters+digits)
 parser.add_argument('--width', type=int, action='store', default=40)
 parser.add_argument('--height', type=int, action='store', default=60)
+parser.add_argument('--morphmin', type=float, action='store', default=0.2)
+parser.add_argument('--morphmax', type=float, action='store', default=0.7)
 
 args = parser.parse_args()
 
@@ -45,8 +47,11 @@ for char in args.characters:
         random_font = os.path.join(font_directory, choice(fonts))
         char_image = claptcha.Claptcha(char,
                                        random_font,
+                                       margin=(0, 0),
                                        size=(200,250),
-                                       injectLine=False)
+                                       injectLine=False,
+                                       morph_min_coeff=args.morphmin,
+                                       morph_max_coeff=args.morphmax)
 
         char_data = np.array(char_image.image[1].convert('L'))
 

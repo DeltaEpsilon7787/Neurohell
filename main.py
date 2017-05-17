@@ -22,14 +22,15 @@ except:
         char = chr(int(char_code))
         path2 = path.join(path1, char_code)
         for file in listdir(path2):
-            new_data = np.array(Image.open(path.join(path2, file)).convert('L'))
-            new_data = 1 - new_data / 255  # Grayscale
-            # threshold = 0
-            # mask = new_data < threshold
-            # new_data[mask] = 0
-            # new_data[np.invert(mask)] = 1
-            samples.append(new_data)
-            answers.append(char)
+            with Image.open(path.join(path2, file)) as img:
+                new_data = np.array(img.convert('L'))
+                new_data = 1 - new_data / 255  # Grayscale
+                # threshold = 0
+                # mask = new_data < threshold
+                # new_data[mask] = 0
+                # new_data[np.invert(mask)] = 1
+                samples.append(new_data)
+                answers.append(char)
 
     samples = np.array(samples)
     samples = samples.reshape((*samples.shape[:3], 1))
@@ -42,7 +43,6 @@ beta = CNN.Introspection.Introspector(alpha.model)
 alpha.train_model(samples, answers, epochs=128, verbose=1)
 
 
-#==============================================================================
 # dist = samples.shape[0] // len(all_chars)
 #
 # beta.get_view(samples[0], layer_num=0)
@@ -59,6 +59,6 @@ alpha.train_model(samples, answers, epochs=128, verbose=1)
 # beta.get_view(samples[2*dist], layer_num=2)
 # beta.get_view(samples[2*dist], layer_num=4)
 # beta.get_view(samples[2*dist], layer_num=7)
-#==============================================================================
+
 
 # gamma = alpha.recognize(samples[:2000])

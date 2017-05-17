@@ -51,7 +51,7 @@ def generate_network(input_shape,
         factory_func = char_map[code]
         data_id = code + str(counter[code])
         layer_params = architecture_data.get(data_id, {})
-        layer_params['name'] = data_id
+        layer_params['name'] = layer_params.get('name', data_id)
 
         if first_layer:
             layer_params['input_shape'] = input_shape
