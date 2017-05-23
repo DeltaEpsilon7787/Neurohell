@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Implements some basic meta-functions for CNN.
+Implements some basic meta-functions used by CNN.
 """
 
+import os
 from collections import Counter, deque
+from itertools import repeat
+from random import choice, random, uniform
+from preprocessor import converters
 
 import numpy as np
+import claptcha
 
 from keras.layers import Conv2D, Dense
 from keras.layers import AveragePooling2D, MaxPooling2D
@@ -22,15 +27,25 @@ def generate_network(input_shape,
                      architecture_data,
                      optimizer,
                      loss):
-    """Generate CNN
+    """Generate a CNN
 
-    Inputs
-    ------
-
-    ------
+    Parameters
+    ----------
+    input_shape: 3-tuple
+        Shape of the input for this CNN
+    architecture: str
+        Symbolic architecture of the CNN
+    architecture_data: Dict
+        Configuration of layers in the CNN
+    optimizer: str
+        Optimizer used by CNN
+    loss: str
+        Loss function used by CNN
+    ---------
 
     Returns
     -------
+    KerasModel
         Generated model
     -------
     """
@@ -68,12 +83,65 @@ def generate_network(input_shape,
     return model
 
 
+def training_data_generator(**kwargs):
+    """Return an infinite generator for characters
+
+    Parameters
+    ----------
+    characters: str, default 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+        Characters that this generator can generate.
+    inject_line_probability: float, default 0.5
+        Probability of drawing a line in an image
+    morphological_coefficient_min: float, default 0.2
+    morphological_coefficient_max: float, default 0.7
+        Bounds for morph. coefficient
+    noise_coefficients_min: float, default 0.0
+    noise_coefficients_max: float, default 1.0
+        Bounds for noise coefficient.
+    samples_per_batch: uint, default 50
+        Amount of samples in a batch
+    font_directory: str, default ./Fonts
+        Path to directory with fonts
+    ----------
+
+    Returns
+    -------
+    Generator object
+    -------
+    """
+
+    samples = deque()
+    answers = deque()
+
+    characters = kwargs.get('characters', ascii_uppercase+digits)
+    line_probability = kwargs.get('inject_line_probability', 0.5)
+    morph_min = kwargs.get('morphological_coefficient_min', 0.2)
+    morph_max = kwargs.get('morphological_coefficient_max', 0.7)
+    noise_min = kwargs.get('noise_coefficient_min', 0.0)
+    noise_max = kwargs.get('noise_coefficient_max', 1.0)
+    samples_per_batch = kwargs.get('samples_per_batch', 50)
+    font_directory = kwargs.get('font_directory', './Fonts')
+
+    for character in repeat(characters):
+        for sample_id in range(samples_per_batch):
+            random_font = choice(os.listdir(font_directory))
+            injectLine = random() < line_probability
+            test_captcha = claptcha.Claptcha(character,
+                                             random_font,
+                                             injectLine=injectLine,
+                                             morph_min=morph_min,
+                                             morph_max=morph_max)
+            test_captcha.noise = uniform(noise_min, noise_max)
+            cci2gf = converters.convert_character_image_to_generic_format
+            samples.append(cci2gf(test_captcha))
+
+
+
+
+
 def train_network(model,
-                  data_in,
-                  data_out,
+                  params,
                   epochs=32,
-                  val_data_in=None,
-                  val_data_out=None,
                   save_path=None,
                   early_stopper=None,
                   verbose=0):
@@ -83,28 +151,18 @@ def train_network(model,
     ------
     model: Network
         Network to train
-    data_in: Data 4D array (size, height, width, 1)
-        Samples to be forwarded to the network
-    data_out: Output 4D array (samples, 62)
-        Expected output. Each row should only contain one 1
+    params: Dict
+        Params of training session.
     epochs: uint, optional
         Epochs to pass before cutoff
-    validation_split: float, [0..1], optional
-        Ratio of training samples to test samples.
     save_path: str or None, optional
         Automatically saves trained network here if not None
     verbose: 0, 1, 2
-        Supplied to fit()
+        Supplied to fit_generator()
     ------
     """
 
-    model.fit(data_in,
-              data_out,
-              validation_data=(val_data_in, val_data_out),
-              epochs=epochs,
-              shuffle=True,
-              callbacks=[early_stopper],
-              verbose=verbose)
+
 
     if save_path:
         save_model(model, save_path)
@@ -159,7 +217,7 @@ def classes_to_chars(classes, mask):
     for category in classes:
         best_prediction = np.argwhere(category)
         if best_prediction.shape[0] > 1:  # More than one prediction
-             return_value.append('UNKNOWN')
+             return_value.append('???')
              continue
         return_value.append(mask[best_prediction[0][0]])
     return np.array(return_value).reshape(-1, 1)
@@ -171,6 +229,7 @@ def chars_to_classes(chars, mask, num_classes):
         masked_out = to_categorical(mask[char], num_classes=num_classes)
         return_value.append(masked_out)
     return np.array(return_value).reshape((len(chars), num_classes))
+
 
 def pass_data(model,
               data_in,

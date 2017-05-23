@@ -1,1 +1,1 @@
-"C:\Users\Editor\Anaconda3\envs\neurohell\python.exe" "./generator.py" 50 -r --width 40 --height 60 --morphmin 0.0 --morphmax 0.3
+"C:\Users\Editor\Anaconda3\envs\neurohell\python.exe" "./generator.py" 100 -r --width 20 --height 30 --morphmin 0.0 --morphmax 0.5 --noisemin 0.0 --noisemax 1.0 --lineprob 0.5

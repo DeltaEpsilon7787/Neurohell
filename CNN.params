@@ -1,60 +1,94 @@
 {
-    "validation_split": 0.2,
-    "architecture_code": "CMGCAGFLL",
+    "architecture_code": "CMDCMDCMDFLL",
     "input_shape": [
-        60,
-        40,
+        30,
+        20,
         1
     ],
     "architecture": {
         "C0": {
-            "name": "basic_stuff",
-            "filters": 64,
+            "name": "basic_features",
+            "filters": 32,
             "activation": "relu",
-            "kernel_size": 3,
-            "use_bias": 0
+            "kernel_size": 2,
+            "use_bias": 1
         },
         "M0": {
             "pool_size": [
-                4,
-                4
+                2,
+                2
             ]
         },
+        "D0": {
+            "rate": 0.25
+        },
         "G0": {
-            "stddev": 0.01
+            "stddev": 0.5
         },
         "C1": {
-            "name": "features",
-            "filters": 64,
+            "name": "compound_features",
+            "filters": 28,
             "activation": "relu",
             "kernel_size": 3,
             "use_bias": 0
         },
-        "A0": {
+        "M1": {
             "pool_size": [
-                3,
-                3
+                1,
+                1
             ]
         },
+        "D1": {
+            "rate": 0.20
+        },
         "G1": {
-            "stddev": 0.01
+            "stddev": 0.5
+        },
+        "C2": {
+            "name": "high_level_features",
+            "filters": 24,
+            "activation": "relu",
+            "kernel_size": 4,
+            "use_bias": 0
+        },
+        "M2": {
+            "pool_size": [
+                1,
+                1
+            ]
+        },
+        "D2": {
+            "rate": 0.1
         },
         "L0": {
             "name": "recognition_layer",
-            "units": 124,
-            "activation": "relu",
+            "units": 40,
+            "activation": "tanh",
             "use_bias": 0
         },
         "L1": {
             "name": "output_layer",
-            "units": 62,
-            "activation": "softmax",
+            "units": 36,
+            "activation": "sigmoid",
             "use_bias": 0
         }
     },
-    "training_patience": 2,
-    "optimizer": "adagrad",
+    "early_stopper_patience": 8,
+    "lr_decreaser_patience": 2,
+    "lr_decreaser_factor": 0.5,
+    "optimizer": "adam",
     "IOPath": ".\\CNN.neuro",
     "confidence_threshold": 0.90,
-    "loss": "categorical_crossentropy"
+    "loss": "categorical_crossentropy",
+
+    "characters": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "font_directory": "./Fonts",
+    "inject_line_probability": 0.5
+    "morphological_coefficient_min": 0.0
+    "morphological_coefficient_max": 0.5
+    "noise_coefficient_min": 0.0
+    "noise_coefficient_max": 1.0
+    "samples_per_batch": 50,
+    "test_samples_per_batch": 10
+
 }

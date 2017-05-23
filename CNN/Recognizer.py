@@ -9,7 +9,7 @@ from collections import deque
 from json import load, dump
 
 from CNN import CNN
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, ReduceLROnPlateau
 import numpy as np
 
 
@@ -59,9 +59,18 @@ class Recognizer:
                     )
                 )
 
-        patience = new_params['training_patience']
+        stopper_patience = new_params['early_stopper_patience']
+        lr_decreaser_patience = new_params['lr_decreaser_patience']
+        lr_decreaser_factor = new_params['lr_decreaser_factor']
+
+
         self._early_stop = EarlyStopping(monitor='val_loss',
-                                         patience=patience)
+                                         patience=stopper_patience)
+
+        self._lr_decreaser = ReduceLROnPlateau(monitor='val_loss',
+                                               factor=lr_decreaser_factor,
+                                               patience=lr_decreaser_patience,
+                                               verbose=1)
 
         self._init_network(start_anew, architecture_data, optimizer, loss)
 

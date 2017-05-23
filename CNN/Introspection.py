@@ -84,7 +84,7 @@ class Introspector:
             # Simple image
             f, ax = plt.subplots()
             normalized_output = 0.5 + output / np.max(np.abs(output)) / 2
-            ax.imshow(normalized_output, cmap='hot')
+            ax.imshow(normalized_output, cmap='binary')
             f.set_figwidth(fig_size[0])
             f.set_figheight(fig_size[1])
             ax.set_axis_off()
@@ -102,7 +102,7 @@ class Introspector:
                 plot_data = fax[index].imshow(image_data,
                                               vmin=0.0,
                                               vmax=1.0,
-                                              cmap='hot')
+                                              cmap='binary')
                 fax[index].set_axis_off()
                 # f.colorbar(plot_data, ax=fax[index])
             return f
