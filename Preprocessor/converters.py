@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import numpy as np
 
-
-def convert_character_image_to_generic_format(image):
+def image2CNNdata(image):
+    data = np.expand_dims(np.array(image), axis=2)
+    data = 1 - data / 255
+    return data

@@ -75,20 +75,18 @@
     },
     "early_stopper_patience": 8,
     "lr_decreaser_patience": 2,
-    "lr_decreaser_factor": 0.5,
+    "lr_decreaser_factor": 0.1,
     "optimizer": "adam",
     "IOPath": ".\\CNN.neuro",
     "confidence_threshold": 0.90,
     "loss": "categorical_crossentropy",
-
     "characters": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     "font_directory": "./Fonts",
-    "inject_line_probability": 0.5
-    "morphological_coefficient_min": 0.0
-    "morphological_coefficient_max": 0.5
-    "noise_coefficient_min": 0.0
-    "noise_coefficient_max": 1.0
-    "samples_per_batch": 50,
-    "test_samples_per_batch": 10
-
+    "line_prob": 0.5,
+    "morphological_coefficient_min": 0.0,
+    "morphological_coefficient_max": 0.5,
+    "noise_coefficient_min": 0.0,
+    "noise_coefficient_max": 1.0,
+    "samples_per_batch": 30,
+    "test_samples_per_batch": 5
 }

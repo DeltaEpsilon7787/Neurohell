@@ -27,7 +27,7 @@ parser.add_argument('--lineprob', type=float, action='store', default=0.5)
 args = parser.parse_args()
 
 save_directory = "../Samples"
-font_directory = "./Fonts"
+font_directory = "../Fonts"
 size = (args.width, args.height)
 fonts = os.listdir(font_directory)
 

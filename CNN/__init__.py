@@ -1,2 +1,2 @@
-import CNN.Recognizer
-import CNN.Introspection
+from . import Recognizer
+from . import Introspection
