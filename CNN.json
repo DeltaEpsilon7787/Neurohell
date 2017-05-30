@@ -1,53 +1,47 @@
 {
-    "architecture_code": "CMDCMDCMDFLL",
+    "architecture_code": "CMCMCMFLL",
     "input_shape": [
-        30,
-        20,
+        60,
+        40,
         1
     ],
     "architecture": {
         "C0": {
             "name": "basic_features",
-            "filters": 32,
-            "activation": "relu",
-            "kernel_size": 2,
+            "filters": 60,
+            "activation": "elu",
+            "kernel_size": 3,
             "use_bias": 1
         },
         "M0": {
             "pool_size": [
-                2,
-                2
+                3,
+                3
             ]
         },
         "D0": {
-            "rate": 0.25
-        },
-        "G0": {
-            "stddev": 0.5
+            "rate": 0.0
         },
         "C1": {
             "name": "compound_features",
-            "filters": 28,
-            "activation": "relu",
+            "filters": 50,
+            "activation": "elu",
             "kernel_size": 3,
             "use_bias": 0
         },
         "M1": {
             "pool_size": [
-                1,
-                1
+                2,
+                2
             ]
         },
         "D1": {
-            "rate": 0.20
-        },
-        "G1": {
-            "stddev": 0.5
+            "rate": 0.0
         },
         "C2": {
             "name": "high_level_features",
-            "filters": 24,
-            "activation": "relu",
+            "filters": 40,
+            "activation": "elu",
             "kernel_size": 4,
             "use_bias": 0
         },
@@ -58,25 +52,26 @@
             ]
         },
         "D2": {
-            "rate": 0.1
+            "rate": 0.0
         },
         "L0": {
             "name": "recognition_layer",
-            "units": 40,
-            "activation": "tanh",
+            "units": 60,
+            "activation": "elu",
             "use_bias": 0
         },
         "L1": {
             "name": "output_layer",
             "units": 36,
-            "activation": "sigmoid",
+            "activation": "softmax",
             "use_bias": 0
         }
     },
     "early_stopper_patience": 8,
     "lr_decreaser_patience": 2,
-    "lr_decreaser_factor": 0.1,
-    "optimizer": "adam",
+    "lr_decreaser_factor": 0.5,
+    "lr_cooldown": 5,
+    "optimizer": "nadam",
     "IOPath": ".\\CNN.neuro",
     "confidence_threshold": 0.90,
     "loss": "categorical_crossentropy",
@@ -87,6 +82,6 @@
     "morphological_coefficient_max": 0.5,
     "noise_coefficient_min": 0.0,
     "noise_coefficient_max": 1.0,
-    "samples_per_batch": 30,
-    "test_samples_per_batch": 5
+    "samples_per_batch": 70,
+    "test_samples_per_batch": 10
 }

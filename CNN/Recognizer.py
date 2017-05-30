@@ -11,11 +11,11 @@ from string import ascii_uppercase, digits
 
 import numpy as np
 from CNN import CNN
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 
 
 class Recognizer:
-    def __init__(self, config_path, start_anew=False):
+    def __init__(self, config_path, start_anew=False, verbosity=0):
         """Init Recognizer class.
 
         Inputs
@@ -26,8 +26,10 @@ class Recognizer:
             Create a fresh network or load it from IOPath from config file?
         ------
         """
+        self.verbosity = verbosity
         with open(config_path, mode='r') as new_params_file:
             new_params = load(new_params_file)
+        self._IOPath = new_params.get('IOPath', './CNN.neuro')
 
         input_shape = tuple(new_params['input_shape'])
         architecture = new_params['architecture_code']
@@ -73,15 +75,19 @@ class Recognizer:
         stopper_patience = new_params.get('early_stopper_patience', 8)
         lr_decreaser_patience = new_params.get('lr_decreaser_patience', 2)
         lr_decreaser_factor = new_params.get('lr_decreaser_factor', 0.5)
+        lr_cooldown = new_params.get('lr_cooldown', 5)
         early_stopper = EarlyStopping(monitor='val_loss',
                                       patience=stopper_patience)
         lr_decreaser = ReduceLROnPlateau(monitor='val_loss',
                                          factor=lr_decreaser_factor,
                                          patience=lr_decreaser_patience,
-                                         verbose=1)
-        self._callbacks = [early_stopper, lr_decreaser]
-
-        self._IOPath = new_params.get('IOPath', './CNN.neuro')
+                                         verbose=self.verbosity,
+                                         cooldown=lr_cooldown)
+        model_saver = ModelCheckpoint(self._IOPath,
+                                      monitor='val_loss',
+                                      verbose=self.verbosity,
+                                      save_best_only=True)
+        self._callbacks = [early_stopper, lr_decreaser, model_saver]
 
     def _init_network(self,
                       model_params,
@@ -130,6 +136,11 @@ class Recognizer:
         validation_source: str, default None
             Same as sample_source,.but for testing
         ------
+
+        Returns
+        -------
+        History of training
+        -------
         """
         training_generator = (
                 CNN.create_stored_data_generator(sample_source,
@@ -150,11 +161,11 @@ class Recognizer:
                            'callbacks': self._callbacks,
                            'validation_data': validation_generator,
                            'validation_steps': self._test_samples_per_batch}
-        CNN.train_network(self.model,
-                          training_params,
-                          epochs=epochs,
-                          verbose=verbose,
-                          save_path=self._IOPath)
+        return CNN.train_network(self.model,
+                                 training_params,
+                              epochs=epochs,
+                              verbose=verbose,
+                              save_path=self._IOPath)
 
     def recognize(self, data_in):
         """Recognize given image.
@@ -174,5 +185,5 @@ class Recognizer:
         return CNN.pass_data(self.model,
                              data_in,
                              self._mask,
-                             self.num_classes,
+                             self._num_classes,
                              self.confidence_threshold)

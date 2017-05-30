@@ -5,7 +5,6 @@ Implements some basic meta-functions used by CNN.
 
 import os
 from collections import Counter, deque
-from itertools import cycle
 from random import choice, random, uniform
 from preprocessor import converters
 from string import ascii_uppercase, digits
@@ -13,9 +12,10 @@ from string import ascii_uppercase, digits
 import numpy as np
 import claptcha
 
-from keras.layers import Conv2D, Dense
+from keras.layers import Conv2D, Dense, Activation
 from keras.layers import AveragePooling2D, MaxPooling2D
 from keras.layers import Flatten, Reshape, Dropout, GaussianNoise
+from keras.layers.advanced_activations import LeakyReLU
 
 from keras.models import Sequential, save_model, load_model
 from keras.metrics import categorical_accuracy
@@ -56,7 +56,9 @@ def generate_network(**kwargs):
                      ('M', MaxPooling2D),
                      ('F', Flatten),
                      ('R', Reshape),
-                     ('L', Dense)))
+                     ('L', Dense),
+                     ('T', LeakyReLU),
+                     ('Q', Activation)))
 
     counter = Counter()
     first_layer = True
@@ -79,7 +81,6 @@ def generate_network(**kwargs):
                   metrics=[categorical_accuracy])
 
     return model
-
 
 def create_data_generator(**kwargs):
     """Return a generator for characters
@@ -185,6 +186,7 @@ def create_stored_data_generator(path, mask, num_classes):
     answers = np.stack(answers, axis=0)
     while True:
         yield (samples, answers)
+
 
 def train_network(model,
                   params,

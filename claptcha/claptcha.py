@@ -324,8 +324,7 @@ class Claptcha(object):
             random_noise = uniform(0, 255, size).astype(uint8)
             random_noise = tile(random_noise, (3, 1, 1)).T
             return Image.fromarray(random_noise, mode='RGB')
-        else:
-            return None
+        return None
 
     def _rndLetterTransform(self, image):
         """Randomly morph a single character."""
