@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May 28 02:08:47 2017
-
-@author: Editor
-"""
-
 from collections import deque
 from itertools import accumulate, chain
 from functools import reduce
@@ -17,16 +10,19 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 def generate_captcha(text,
                      size,
                      font,
-                     font_size=200,
-                     max_angle=10,
-                     max_horizontal_deviation=0,
-                     max_vertical_deviation=0,
-                     foreground_iterations=1000,
-                     background_iterations=10,
-                     foreground_bounds=(0, 200),
-                     background_bounds=(180, 255),
-                     foreground_size_limit=10,
-                     background_size_limit=5):
+                     **kwargs):
+
+    font_size = kwargs.get('font_size', 200)
+    max_angle = kwargs.get('max_angle', 10)
+    max_horizontal_deviation = kwargs.get('max_horizontal_deviation', 0)
+    max_vertical_deviation = kwargs.get('max_vertical_deviation', 0)
+    foreground_iterations = kwargs.get('foreground_iterations', 1000)
+    background_iterations = kwargs.get('background_iteration', 100)
+    foreground_bounds = kwargs.get('foreground_bounds', (0, 200))
+    background_bounds = kwargs.get('background_bounds', (180, 255))
+    foreground_size_limit = kwargs.get('foreground_size_limit', 30)
+    background_size_limit = kwargs.get('background_size_limit', 30)
+
 
     foreground_limit = (-foreground_size_limit, foreground_size_limit)
     background_limit = (-background_size_limit, background_size_limit)
@@ -38,7 +34,6 @@ def generate_captcha(text,
     foreground_draw = ImageDraw.Draw(foreground)
     background_draw = ImageDraw.Draw(background)
 
-    """Create random background noise and prepare random gap noise"""
     for i in range(foreground_iterations):
         r1x = randint(0, size[0])
         r1y = randint(0, size[1])

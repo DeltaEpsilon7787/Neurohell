@@ -1,0 +1,20 @@
+...
+CNN [DONE]
+
+Implement "Estimate width" [IGNORING]
+    Try to find holes, if successful then character width is HOLE MINOR AXIS + 2*THICKNESS
+        O Q 0 6 8 9
+    Try to find triangles, if successful then character width is TRIANGLE LOWER SIDE + 2*THICKNESS
+        A M N V W X Y Z 4 7
+    Try to find bullet shaped figures (square + ellipse), if successful then character width is MIDDLE LINE + 2 * THICKNESS
+        B D P R U
+    Try to find parallel lines, if successful then character width is length of this line
+        E F I M N Z 5
+Implement "Estimate CAPTCHA length" [IGNORING]
+
+Implement "Heurestic split" [DONE]
+Implement "Preprocessor" [PENDING]
+
+Train the CNN with the new system
+Implemnet "User Interface"
+...

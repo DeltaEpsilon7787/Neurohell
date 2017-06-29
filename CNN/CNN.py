@@ -6,7 +6,7 @@ Implements some basic meta-functions used by CNN.
 import os
 from collections import Counter, deque
 from random import choice, random, uniform
-from preprocessor import converters
+from preprocessoring import converters
 from string import ascii_uppercase, digits
 
 import numpy as np
@@ -173,16 +173,16 @@ def create_stored_data_generator(path, mask, num_classes):
     samples = deque()
     answers = deque()
     if os.path.exists(path) and os.path.isdir(path):
-        for char_code in os.listdir(path):
-            character = chr(int(char_code))
-            for sample_file in os.listdir(os.path.join(path, char_code)):
-                with Image.open(os.path.join(path, char_code, sample_file)) as img:
-                    data = converters.image2CNNdata(img)
-                    answer = chars_to_classes([character], mask, num_classes)
-                    samples.append(data)
-                    answers.append(answer.flatten())
+        for sample_file in os.listdir(os.path.join(path)):
+            character = sample_file[0]
+            with Image.open(os.path.join(path, sample_file)) as img:
+                data = converters.image2CNNdata(img)
+                answer = chars_to_classes([character], mask, num_classes)
+                samples.append(data)
+                answers.append(answer.flatten())
 
     samples = np.stack(samples, axis=0)
+    samples = samples.reshape((*samples.shape, 1))
     answers = np.stack(answers, axis=0)
     while True:
         yield (samples, answers)
